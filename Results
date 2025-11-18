@@ -1,0 +1,43 @@
+print(res.columns)
+
+print(res.index)
+print(type(res.index))
+ndex([ 115,  116,  117,  118,  119,  120,  236,  237,  238,  239,
+       ...
+       3987, 3988, 3989, 3990, 4106, 4107, 4108, 4109, 4110, 4111],
+      dtype='int64', length=204)
+<class 'pandas.core.indexes.base.Index'>
+
+
+res = res.reset_index()  
+res['MonthStart'] = pd.to_datetime(res['index']).dt.to_period('M').dt.to_timestamp()
+
+importances = pd.Series(rf.feature_importances_, index=features).sort_values(ascending=False)
+display(importances)
+sns.barplot(x=importances.values, y=importances.index)
+plt.title('
+ag_1             0.701075
+rolling_3_mean    0.263406
+lag_3             0.013863
+month             0.007793
+state_le          0.007527
+year              0.004076
+quarter           0.002260
+dtype: float64
+
+os.makedirs('models', exist_ok=True)
+joblib.dump(rf, 'models/rf_ev_monthly_state.pkl')
+joblib.dump(le_state, 'models/label_encoder_state.pkl')
+print("Saved model and encoder.")
+
+
+try:
+    import geopandas as gpd
+    geo_path = 'data/india_states.geojson'
+    assert os.path.exists(geo_path), "Place an India states geojson at data/india_states.geojson to create choropleth."
+    gdf = gpd.read_file(geo_path)
+    state_sales = monthly_state.groupby('State', as_index=False)['Monthly_Sales'].sum()   
+    print(gdf.columns)   
+    print("Geo plotting code scaffold shown. Adjust the merge key as per your geojson properties.")
+except Exception as e:
+    print("Geopandas not set up or geojson missing. Skipping choropleth. Error:", str(e))
