@@ -1,0 +1,9 @@
+DATA_PATH =  r"C:\Users\Sharique Hasan\Desktop\DATA ANALYST INTERNSHIP\Dataset\Electric Vehicle Sales by State in India _ ML _ FA _ DA projects.xlsx" 
+assert os.path.exists(DATA_PATH), f"Dataset not found at {DATA_PATH}"
+
+df = pd.read_csv(DATA_PATH)
+print("rows, cols:", df.shape)
+display(df.head())
+df.info()
+
+
