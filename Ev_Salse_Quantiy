@@ -1,0 +1,7 @@
+target = 'EV_Sales_Quantity'
+print("Target exists?", target in df.columns)
+print(df[target].describe())
+sns.histplot(df[target], bins=50, stat='density')
+plt.title('Distribution of EV_Sales_Quantity')
+plt.show()
+
