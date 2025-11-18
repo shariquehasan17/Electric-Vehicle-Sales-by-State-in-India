@@ -1,0 +1,47 @@
+national = monthly_state.groupby('MonthStart', as_index=False)['Monthly_Sales'].sum()
+plt.plot(national['MonthStart'], national['Monthly_Sales'], marker='o')
+plt.title('National monthly EV sales (total)')
+plt.xlabel('Month')
+plt.ylabel('Sales')
+plt.xticks(rotation=45)
+plt.show()
+
+# top states overall
+state_totals = monthly_state.groupby('State', as_index=False)['Monthly_Sales'].sum().sort_values('Monthly_Sales', ascending=False)
+display(state_totals.head(15))
+
+# bar chart of top 12
+sns.barplot(data=state_totals.head(12), x='Monthly_Sales', y='State')
+plt.title('Top 12 states by total sales (all time)')
+plt.show()
+
+	State	Monthly_Sales
+31	Uttar Pradesh	732074.0
+19	Maharashtra	401535.0
+15	Karnataka	315498.0
+8	Delhi	268538.0
+27	Rajasthan	228573.0
+4	Bihar	213465.0
+29	Tamil Nadu	206902.0
+10	Gujarat	176713.0
+3	Assam	151917.0
+16	Kerala	133246.0
+18	Madhya Pradesh	133182.0
+24	Odisha	86823.0
+11	Haryana	85250.0
+33	West Bengal	78112.0
+1	Andhra Pradesh	77356.0
+
+monthly_state = monthly_state.sort_values(['State','MonthStart'])
+monthly_state['lag_1'] = monthly_state.groupby('State')['Monthly_Sales'].shift(1)
+monthly_state['lag_3'] = monthly_state.groupby('State')['Monthly_Sales'].shift(3)
+monthly_state['rolling_3_mean'] = monthly_state.groupby('State')['Monthly_Sales'].shift(1).rolling(window=3).mean().reset_index(level=0, drop=True)
+# fill NA lags with 0 (or consider dropna)
+monthly_state[['lag_1','lag_3','rolling_3_mean']] = monthly_state[['lag_1','lag_3','rolling_3_mean']].fillna(0)
+
+# datetime features
+monthly_state['month'] = monthly_state['MonthStart'].dt.month
+monthly_state['year'] = monthly_state['MonthStart'].dt.year
+monthly_state['quarter'] = monthly_state['MonthStart'].dt.quarter
+
+display(monthly_state.head())
