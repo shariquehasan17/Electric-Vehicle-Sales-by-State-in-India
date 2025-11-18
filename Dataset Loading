@@ -1,0 +1,22 @@
+import os
+
+folder = r"C:\Users\Sharique Hasan\Desktop\DATA ANALYST INTERNSHIP\Dataset"
+
+print("Files inside your Dataset folder:\n")
+for f in os.listdir(folder):
+    print(f)
+
+['Electric Vehicle Sales by State in India _ ML _ FA _ DA projects.xlsx']
+
+
+import os
+
+folder = r"C:\Users\Sharique Hasan\Desktop\DATA ANALYST INTERNSHIP\Dataset"
+
+print("📂 Files actually inside this folder:\n")
+for f in os.listdir(folder):
+    print(" •", f)
+
+DATA_PATH = r"C:\Users\Sharique Hasan\Desktop\DATA ANALYST INTERNSHIP\Dataset\Electric Vehicle Sales by State in India _ ML _ FA _ DA projects.xlsx.csv"
+import pandas as pd
+df = pd.read_csv(DATA_PATH)
