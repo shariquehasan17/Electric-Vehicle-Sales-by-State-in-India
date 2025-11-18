@@ -1,0 +1,24 @@
+if 'State' in df.columns:
+    df['State'] = df['State'].astype(str).str.strip().replace('', 'Unknown')
+    # example correction(s) - add more if you spot mismatches
+    df['State'] = df['State'].replace({
+        'Andaman & Nicobar Island': 'Andaman & Nicobar Islands',
+        'NCT of Delhi': 'Delhi'
+    })
+else:
+    raise ValueError("Dataset missing 'State' column")
+
+df['Year'] = df['Date'].dt.year
+df['Month'] = df['Date'].dt.month
+# create a month start date for grouping/ts index
+df['MonthStart'] = df['Date'].dt.to_period('M').dt.to_timestamp()
+
+monthly_state = (
+    df.groupby(['State','MonthStart'], as_index=False)
+      [target].sum()
+      .rename(columns={target:'Monthly_Sales'})
+)
+print("Aggregated monthly-state shape:", monthly_state.shape)
+display(monthly_state.head())
+
+
