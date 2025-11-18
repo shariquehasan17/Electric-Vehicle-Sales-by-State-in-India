@@ -1,0 +1,52 @@
+res = X_test.copy()
+res['y_true'] = y_test.values
+res['y_pred'] = y_pred
+res['residual'] = res['y_true'] - res['y_pred']
+
+res['date'] = pd.to_datetime(res['date'])
+
+res['MonthStart'] = res['date'].dt.to_period('M').dt.to_timestamp()
+
+agg = res.groupby('MonthStart', as_index=False)[['y_true', 'y_pred']].sum()
+plt.plot(agg['MonthStart'], agg['y_true'], label='Actual')
+plt.plot(agg['MonthStart'], agg['y_pred'], label='Predicted')
+plt.legend()
+plt.xticks(rotation=45)
+plt.title('Aggregated Actual vs Predicted (test period)')
+plt.show()
+
+sns.histplot(res['residual'], bins=50)
+plt.title('Residuals distribution')
+plt.show()
+
+
+res = X_test.copy()
+res['y_true'] = y_test.values
+res['y_pred'] = y_pred
+res['residual'] = res['y_true'] - res['y_pred']
+# sample a few states or plot aggregated
+# aggregated monthly actual vs pred
+agg = res.groupby('MonthStart', as_index=False)[['y_true','y_pred']].sum()
+plt.plot(agg['MonthStart'], agg['y_true'], label='Actual')
+plt.plot(agg['MonthStart'], agg['y_pred'], label='Predicted')
+plt.legend(); plt.xticks(rotation=45); plt.title('Aggregated Actual vs Predicted (test period)')
+plt.show()
+
+# residual histogram
+sns.histplot(res['residual'], bins=50)
+plt.title('Residuals distribution')
+plt.show()
+
+
+rf = RandomForestRegressor(n_estimators=200, random_state=42, n_jobs=-1)
+rf.fit(X_train, y_train)
+
+# predictions
+y_pred = rf.predict(X_test)
+
+# metrics
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
+print("RF MAE: {:.2f}, RMSE: {:.2f}, R2: {:.3f}".format(mae, rmse, r2))
