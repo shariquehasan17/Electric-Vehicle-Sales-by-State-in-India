@@ -1,0 +1,16 @@
+df.columns = [c.strip() for c in df.columns]
+
+# parse date
+if 'Date' in df.columns:
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+else:
+    # if only Year and Month present, try to build a date
+    if 'Year' in df.columns and 'Month_Name' in df.columns:
+        # map month names -- assumes english month names
+        df['Date'] = pd.to_datetime(df['Year'].astype(str) + '-' + df['Month_Name'], errors='coerce')
+    else:
+        raise ValueError("No Date column and cannot construct Date from columns present.")
+
+# check for parsing issues
+print("NaT in Date:", df['Date'].isna().sum())
+display(df.sample(5))
